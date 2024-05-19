@@ -1,7 +1,17 @@
 import { Bot } from "../../bot.ts";
-import { addReaction, deleteMessage, getChannel, startThreadWithMessage } from "../../deps.ts";
+import { addReaction, deleteMessage, getChannel } from "../../deps.ts";
 
 const config = {
+  "1241695709212704778": [ // media
+    "👍",
+    "😂",
+    "😳",
+    "🤔",
+    "😲",
+    "😢",
+    "😡",
+    "🧵",
+  ],
   "1241669747108483072": [ // creations
     "👍",
     "😂",
@@ -10,6 +20,7 @@ const config = {
     "😲",
     "😢",
     "😡",
+    "🧵",
   ],
   "1241444035512500295": [ // art
     "❤️",
@@ -28,6 +39,17 @@ const config = {
     "😲",
     "😢",
     "😡",
+    "🧵",
+  ],
+  "1241706024969306182": [ // gamenight-media
+    "👍",
+    "😂",
+    "😳",
+    "🤔",
+    "😲",
+    "😢",
+    "😡",
+    "🧵",
   ],
 };
 
@@ -44,11 +66,11 @@ Bot.events.messageCreate = async (bot, message) => {
     return deleteMessage(bot, message.channelId, message.id, `no media content submitted in #${channelName}`);
   }
 
-  startThreadWithMessage(bot, message.channelId, message.id, {
-    autoArchiveDuration: 10080,
-    name: messageContent,
-    rateLimitPerUser: null,
-  });
+  // startThreadWithMessage(bot, message.channelId, message.id, {
+  //   autoArchiveDuration: 10080,
+  //   name: messageContent,
+  //   rateLimitPerUser: null,
+  // });
 
   //@ts-ignore stfu
   for (let i = 0; i < config[channelId].length; i++) {

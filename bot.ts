@@ -17,6 +17,7 @@ const bot = createBot({
   botId: configs.botId,
   intents: [
     "GuildMessages",
+    "GuildMessageReactions",
   ],
   events: {},
 });
