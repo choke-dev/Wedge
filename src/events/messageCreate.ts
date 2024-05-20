@@ -1,5 +1,6 @@
 import { Bot } from "../../bot.ts";
-import { addReaction, deleteMessage, getChannel, hasGuildPermissions } from "../../deps.ts";
+import { addReaction, deleteMessage, hasGuildPermissions } from "../../deps.ts";
+import log from "../utils/logger.ts";
 
 const config = {
   "1241695709212704778": [ // media
@@ -64,14 +65,22 @@ Bot.events.messageCreate = async (bot, message) => {
   const isMemberImmune = hasGuildPermissions(Bot, message.guildId, message.authorId, ["MANAGE_MESSAGES"]);
 
   if (message.attachments.length === 0 && message.embeds.length === 0) {
-    const channel = await getChannel(bot, BigInt(channelId));
-    const channelName = channel?.name;
     if (isMemberImmune) return;
 
-    return deleteMessage(bot, message.channelId, message.id, `no media content submitted in #${channelName}`);
+    return deleteMessage(
+      bot,
+      message.channelId,
+      message.id,
+      `no attachments nor embeds were submitted`,
+    );
   }
 
   for (let i = 0; i < channelConfig.length; i++) {
-    await addReaction(bot, message.channelId, message.id, channelConfig[i]);
+    try {
+      await addReaction(bot, message.channelId, message.id, channelConfig[i]);
+    } catch (err) {
+      log.warn(`An error occured while adding reactions: ${err}`);
+      break;
+    }
   }
 };

@@ -16,7 +16,10 @@ import { Command } from "./src/types/commands.ts";
 const bot = createBot({
   token: configs.token,
   botId: configs.botId,
-  intents: GatewayIntents.GuildMessages | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers,
+  intents: GatewayIntents.GuildMessages |
+    GatewayIntents.GuildMessageReactions |
+    GatewayIntents.GuildMembers |
+    GatewayIntents.MessageContent,
   events: {},
 });
 
