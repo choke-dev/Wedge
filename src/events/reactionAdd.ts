@@ -17,7 +17,12 @@ Bot.events.reactionAdd = async (bot, payload) => {
   removeReactionEmoji(bot, payload.channelId, payload.messageId, "🧵");
 
   const message = await getMessage(bot, payload.channelId, payload.messageId);
-  const threadName = message?.content.replace("\n", " ") || "...";
+  let threadName = message?.content.replace("\n", " ") || "...";
+
+  if (threadName.length > 100) {
+    threadName = threadName.substring(0, 97);
+    threadName += "...";
+  }
 
   startThreadWithMessage(bot, payload.channelId, payload.messageId, {
     autoArchiveDuration: 10080,
