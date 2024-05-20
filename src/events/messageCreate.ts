@@ -1,5 +1,5 @@
 import { Bot } from "../../bot.ts";
-import { addReaction, deleteMessage, getChannel } from "../../deps.ts";
+import { addReaction, deleteMessage, getChannel, hasGuildPermissions } from "../../deps.ts";
 
 const config = {
   "1241695709212704778": [ // media
@@ -55,27 +55,23 @@ const config = {
 };
 
 Bot.events.messageCreate = async (bot, message) => {
-  const channelId = String(message.channelId);
-  const messageContent = message.content || "...";
+  if (!message?.guildId) return;
 
-  //@ts-ignore stfu
-  if (!config[channelId]) return;
+  const channelId = String(message.channelId);
+  const channelConfig = (config as Record<string, string[]>)[channelId];
+  if (!channelConfig) return;
+
+  const isMemberImmune = hasGuildPermissions(Bot, message.guildId, message.authorId, ["MANAGE_MESSAGES"]);
 
   if (message.attachments.length === 0 && message.embeds.length === 0) {
     const channel = await getChannel(bot, BigInt(channelId));
     const channelName = channel?.name;
+    if (isMemberImmune) return;
+
     return deleteMessage(bot, message.channelId, message.id, `no media content submitted in #${channelName}`);
   }
 
-  // startThreadWithMessage(bot, message.channelId, message.id, {
-  //   autoArchiveDuration: 10080,
-  //   name: messageContent,
-  //   rateLimitPerUser: null,
-  // });
-
-  //@ts-ignore stfu
-  for (let i = 0; i < config[channelId].length; i++) {
-    //@ts-ignore stfu
-    await addReaction(bot, message.channelId, message.id, config[channelId][i]);
+  for (let i = 0; i < channelConfig.length; i++) {
+    await addReaction(bot, message.channelId, message.id, channelConfig[i]);
   }
 };

@@ -1,5 +1,5 @@
 import { Bot } from "../../bot.ts";
-import { getMessage, removeReactionEmoji, sendMessage, startThreadWithMessage } from "../../deps.ts";
+import { deleteReactionsEmoji, getMessage, sendMessage, startThreadWithMessage } from "../../deps.ts";
 
 const threadCreationChannelIds: bigint[] = [
   BigInt("1241695709212704778"), // media
@@ -14,14 +14,14 @@ Bot.events.reactionAdd = async (bot, payload) => {
   if (!threadCreationChannelIds.includes(payload.channelId)) return;
   if (payload.userId === bot.id) return;
 
-  removeReactionEmoji(bot, payload.channelId, payload.messageId, "🧵");
+  deleteReactionsEmoji(bot, payload.channelId, payload.messageId, "🧵");
+  //removeReactionEmoji(bot, payload.channelId, payload.messageId, "🧵");
 
   const message = await getMessage(bot, payload.channelId, payload.messageId);
-  let threadName = message?.content.replace("\n", " ") || "...";
+  let threadName: string = message?.content.split("\n")[0] || "...";
 
-  if (threadName.length > 100) {
-    threadName = threadName.substring(0, 97);
-    threadName += "...";
+  if (threadName?.length > 100) {
+    threadName = threadName.slice(0, 100);
   }
 
   startThreadWithMessage(bot, payload.channelId, payload.messageId, {

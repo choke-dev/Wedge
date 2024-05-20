@@ -8,6 +8,7 @@ import {
   enableCacheSweepers,
   enableHelpersPlugin,
   enablePermissionsPlugin,
+  GatewayIntents,
 } from "./deps.ts";
 import { Command } from "./src/types/commands.ts";
 
@@ -15,10 +16,7 @@ import { Command } from "./src/types/commands.ts";
 const bot = createBot({
   token: configs.token,
   botId: configs.botId,
-  intents: [
-    "GuildMessages",
-    "GuildMessageReactions",
-  ],
+  intents: GatewayIntents.GuildMessages | GatewayIntents.GuildMessageReactions | GatewayIntents.GuildMembers,
   events: {},
 });
 
